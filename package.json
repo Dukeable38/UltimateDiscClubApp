@@ -1,0 +1,23 @@
+{
+  "name": "ultimatediscclubapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "allocate.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dukeable38/UltimateDiscClubApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dukeable38/UltimateDiscClubApp/issues"
+  },
+  "homepage": "https://github.com/Dukeable38/UltimateDiscClubApp#readme",
+  "dependencies": {
+    "csv-parse": "^5.6.0"
+  }
+}
