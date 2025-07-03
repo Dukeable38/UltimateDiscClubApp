@@ -1,0 +1,30 @@
+.sidebar {
+       width: 250px;
+       min-height: 100vh;
+       position: fixed;
+       top: 0;
+       left: 0;
+       padding-top: 10px;
+     }
+
+     .container {
+       margin-left: 270px;
+     }
+
+     .nav-link {
+       padding-left: 20px !important;
+       border: 2px solid #ffffff; /* White border around each tab */
+       border-radius: 5px; /* Rounded corners for a polished look */
+       margin: 5px 10px; /* Spacing between tabs */
+       transition: border-color 0.3s; /* Smooth border color change on hover */
+     }
+
+     .nav-link:hover {
+       border-color: #00ff00; /* Green border on hover for visual feedback */
+     }
+
+     .navbar-brand {
+       border: 2px solid #ffffff; /* Border around the brand (Ultimate Disc Admin) */
+       border-radius: 5px;
+       margin: 5px 10px;
+     }
