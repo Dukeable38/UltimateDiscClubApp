@@ -27,3 +27,12 @@ CREATE TABLE check_ins (
     check_in_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (session_id, player_id)
 );
+
+
+CREATE TABLE draft_assignments (
+    draft_id SERIAL PRIMARY KEY,
+    session_id INTEGER NOT NULL REFERENCES sessions(session_id),
+    player_id INTEGER NOT NULL REFERENCES players(id),
+    team VARCHAR(10) NOT NULL CHECK (team IN ('black', 'white')),
+    UNIQUE (session_id, player_id)
+);
