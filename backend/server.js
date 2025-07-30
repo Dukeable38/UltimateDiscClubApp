@@ -1,22 +1,16 @@
 const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
-const playerRoutes = require('./routes/players');
-const sessionRoutes = require('./routes/sessions');
+     const cors = require('cors');
+     const sessionsRouter = require('./routes/sessions');
+     const playersRouter = require('./routes/players');
+     const authRouter = require('./routes/auth');
 
-const app = express();
-const port = process.env.PORT || 5000;
+     const app = express();
+     app.use(cors());
+     app.use(express.json());
 
-app.use(cors());
-app.use(express.json());
-app.use('/api/players', playerRoutes);
-app.use('/api/sessions', sessionRoutes);
+     app.use('/api/sessions', sessionsRouter);
+     app.use('/api/players', playersRouter);
+     app.use('/api/auth', authRouter);
 
-app.get('/', (req, res) => {
-  res.send('Ultimate Disc Backend Running');
-});
-
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
-
+     const PORT = process.env.PORT || 5000;
+     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

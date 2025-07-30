@@ -3,9 +3,12 @@ CREATE TABLE players (
   name VARCHAR(100) NOT NULL,
   student_number VARCHAR(50) UNIQUE NOT NULL,
   payment VARCHAR(20) CHECK (payment IN ('Weekly', 'Semester')),
-  class VARCHAR(20) CHECK (class IN ('Novice', 'Experienced', 'Pro')),
+  class VARCHAR(20) CHECK (class IN ('Novice', 'Experienced', 'Pro')) DEFAULT 3,
   skill INTEGER CHECK (skill >= 1 AND skill <= 10),
   gender VARCHAR(20),
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  skill INTEGER NOT NULL DEFAULT 3,
   is_admin BOOLEAN DEFAULT FALSE
 );
 
