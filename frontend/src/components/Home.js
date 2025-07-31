@@ -1,25 +1,32 @@
 import React from 'react';
-import { Navbar, Nav, Container, Button } from 'react-bootstrap';
+import { Container, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import './Home.css';
+import backgroundImage from '../background_image.jpg'; // Relative to src/
 
 const Home = () => {
   return (
     <>
-      <Navbar bg="light" expand="lg" fixed="top" className="shadow-sm">
-        <Container>
-          <Navbar.Brand as={Link} to="/" className="fw-bold">Ultimate Disc</Navbar.Brand>
-          <Nav className="ms-auto">
-            <Button as={Link} to="/signup" variant="primary" className="me-2">Sign Up</Button>
-            <Button as={Link} to="/login" variant="outline-primary">Log In</Button>
-          </Nav>
-        </Container>
-      </Navbar>
-      <Container className="d-flex flex-column justify-content-center align-items-center min-vh-100">
+      <div
+        style={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          height: '100vh',
+          position: 'fixed',
+          width: '100%',
+          top: 0,
+          left: 0,
+          zIndex: -1,
+        }}
+      />
+      <Container
+        className="d-flex flex-column justify-content-center align-items-center"
+        style={{ height: '100vh', position: 'relative', zIndex: 1, color: 'white' }}
+      >
         <h1 className="text-center mb-4">Welcome to Ultimate Disc</h1>
         <div>
           <Button as={Link} to="/signup" variant="primary" className="me-2">Sign Up</Button>
-          <Button as={Link} to="/login" variant="outline-primary">Log In</Button>
+          <Button as={Link} to="/login" variant="outline-light">Log In</Button>
         </div>
       </Container>
     </>

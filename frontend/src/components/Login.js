@@ -1,59 +1,66 @@
 import React, { useState } from 'react';
-     import axios from 'axios';
-     import { Form, Button, Container, Alert } from 'react-bootstrap';
-     import { useNavigate } from 'react-router-dom';
+import { Container, Form, Button } from 'react-bootstrap';
+import backgroundImage from '../background_image.jpg';
 
-     const Login = () => {
-       const [formData, setFormData] = useState({ email: '', password: '' });
-       const [error, setError] = useState('');
-       const navigate = useNavigate();
+const Login = () => {
+  console.log('Login rendering');
+  const [formData, setFormData] = useState({ email: '', password: '' });
 
-       const handleChange = (e) => {
-         setFormData({ ...formData, [e.target.name]: e.target.value });
-       };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Login data:', formData);
+    // Set flag to indicate logged-in state
+    localStorage.setItem('isAuthenticated', 'true'); // Simple flag
+    localStorage.setItem('isPlayerView', 'true'); // Assume player role
+    window.location.href = '/player/dashboard'; // Redirect to dashboard
+  };
 
-       const handleSubmit = async (e) => {
-         e.preventDefault();
-         try {
-           const response = await axios.post('http://localhost:5000/api/auth/login', formData);
-           localStorage.setItem('token', response.data.token);
-           navigate('/player');
-         } catch (err) {
-           setError(err.response?.data || 'Error logging in');
-         }
-       };
+  return (
+    <>
+      <div
+        style={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          height: '100vh',
+          position: 'fixed',
+          width: '100%',
+          top: 0,
+          left: 0,
+          zIndex: -1,
+        }}
+      />
+      <Container
+        className="d-flex flex-column justify-content-center align-items-center"
+        style={{ height: '100vh', position: 'relative', zIndex: 1, color: 'white' }}
+      >
+        <h1 className="text-center mb-4">Log In</h1>
+        <Form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Enter email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            />
+          </Form.Group>
+          <Button variant="primary" type="submit">
+            Log In
+          </Button>
+        </Form>
+      </Container>
+    </>
+  );
+};
 
-       return (
-         <Container>
-           <h2>Player Login</h2>
-           {error && <Alert variant="danger">{error}</Alert>}
-           <Form onSubmit={handleSubmit}>
-             <Form.Group className="mb-3">
-               <Form.Label>Email</Form.Label>
-               <Form.Control
-                 type="email"
-                 name="email"
-                 value={formData.email}
-                 onChange={handleChange}
-                 required
-               />
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>Password</Form.Label>
-               <Form.Control
-                 type="password"
-                 name="password"
-                 value={formData.password}
-                 onChange={handleChange}
-                 required
-               />
-             </Form.Group>
-             <Button variant="primary" type="submit">
-               Log In
-             </Button>
-           </Form>
-         </Container>
-       );
-     };
-
-     export default Login;
+export default Login;

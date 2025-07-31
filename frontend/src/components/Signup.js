@@ -1,87 +1,65 @@
 import React, { useState } from 'react';
-     import axios from 'axios';
-     import { Form, Button, Container, Alert } from 'react-bootstrap';
-     import { useNavigate } from 'react-router-dom';
+import { Container, Form, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import backgroundImage from '../background_image.jpg'; // Relative to src/
 
-     const Signup = () => {
-       const [formData, setFormData] = useState({ name: '', email: '', password: '', student_number: '', gender: 'other' });
-       const [error, setError] = useState('');
-       const navigate = useNavigate();
+const Signup = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({ email: '', password: '' });
 
-       const handleChange = (e) => {
-         setFormData({ ...formData, [e.target.name]: e.target.value });
-       };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Simulate signup
+    console.log('Signup data:', formData);
+    navigate('/login'); // Redirect to login
+  };
 
-       const handleSubmit = async (e) => {
-         e.preventDefault();
-         try {
-           const response = await axios.post('http://localhost:5000/api/auth/signup', formData);
-           localStorage.setItem('token', response.data.token);
-           navigate('/player');
-         } catch (err) {
-           setError(err.response?.data || 'Error signing up');
-         }
-       };
+  return (
+    <>
+      <div
+        style={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          height: '100vh',
+          position: 'fixed',
+          width: '100%',
+          top: 0,
+          left: 0,
+          zIndex: -1,
+        }}
+      />
+      <Container
+        className="d-flex flex-column justify-content-center align-items-center"
+        style={{ height: '100vh', position: 'relative', zIndex: 1, color: 'white' }}
+      >
+        <h1 className="text-center mb-4">Sign Up</h1>
+        <Form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
+          <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Email address</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Enter email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            />
+          </Form.Group>
+          <Button variant="primary" type="submit">
+            Sign Up
+          </Button>
+        </Form>
+      </Container>
+    </>
+  );
+};
 
-       return (
-         <Container>
-           <h2>Player Signup</h2>
-           {error && <Alert variant="danger">{error}</Alert>}
-           <Form onSubmit={handleSubmit}>
-             <Form.Group className="mb-3">
-               <Form.Label>Name</Form.Label>
-               <Form.Control
-                 type="text"
-                 name="name"
-                 value={formData.name}
-                 onChange={handleChange}
-                 required
-               />
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>Email</Form.Label>
-               <Form.Control
-                 type="email"
-                 name="email"
-                 value={formData.email}
-                 onChange={handleChange}
-                 required
-               />
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>Password</Form.Label>
-               <Form.Control
-                 type="password"
-                 name="password"
-                 value={formData.password}
-                 onChange={handleChange}
-                 required
-               />
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>Student Number</Form.Label>
-               <Form.Control
-                 type="text"
-                 name="student_number"
-                 value={formData.student_number}
-                 onChange={handleChange}
-                 required
-               />
-             </Form.Group>
-             <Form.Group className="mb-3">
-               <Form.Label>Gender</Form.Label>
-               <Form.Select name="gender" value={formData.gender} onChange={handleChange}>
-                 <option value="male">Male</option>
-                 <option value="female">Female</option>
-                 <option value="other">Other</option>
-               </Form.Select>
-             </Form.Group>
-             <Button variant="primary" type="submit">
-               Sign Up
-             </Button>
-           </Form>
-         </Container>
-       );
-     };
-
-     export default Signup;
+export default Signup;
