@@ -1,19 +1,30 @@
+// src/components/Login.js
 import React, { useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import backgroundImage from '../background_image.jpg';
+import axios from 'axios';
 
 const Login = () => {
   console.log('Login rendering');
   const [formData, setFormData] = useState({ email: '', password: '' });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Login data:', formData);
-    // Set flag to indicate logged-in state
-    localStorage.setItem('isAuthenticated', 'true'); // Simple flag
-    localStorage.setItem('isPlayerView', 'true'); // Assume player role
-    window.location.href = '/player/dashboard'; // Redirect to dashboard
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const res = await axios.post('http://localhost:5000/api/auth/login', formData, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+    localStorage.setItem('token', res.data.token);
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('isPlayerView', res.data.player.is_admin ? 'false' : 'true');
+    localStorage.setItem('isAdmin', res.data.player.is_admin.toString()); // Add this
+    console.log('Login - isAdmin:', res.data.player.is_admin);
+    window.location.href = res.data.redirect;
+  } catch (err) {
+    console.error('Login error:', err);
+    alert('Invalid email or password');
+  }
+};
 
   return (
     <>

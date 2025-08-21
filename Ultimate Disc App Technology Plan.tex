@@ -1,0 +1,119 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\title{Ultimate Disc App Technology Plan}
+\author{Project Planning}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+This document outlines the technology stack and planning considerations for the Ultimate Disc App, a web application for managing a student-led Ultimate Disc club. The plan covers all components, with a focus on the team allocation system as the core functionality.
+
+\section{Component Breakdown and Technology Choices}
+
+\subsection{Player Dashboard}
+\begin{itemize}
+    \item \textbf{Purpose:} User interface for players to log in, check in, view team assignments, trophies, and session history.
+    \item \textbf{Technologies:}
+    \begin{itemize}
+        \item React (JSX) via CDN for component-based UI.
+        \item Tailwind CSS for responsive styling.
+        \item JavaScript (ES6+) with Babel for browser compatibility.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Admin Dashboard}
+\begin{itemize}
+    \item \textbf{Purpose:} Manages players, sessions, team drafts, and trophies with real-time updates.
+    \item \textbf{Technologies:}
+    \begin{itemize}
+        \item React (JSX) + Tailwind CSS for consistency with player dashboard.
+        \item React Beautiful DnD or Dnd-kit for drag-and-drop team adjustments.
+        \item Socket.IO for live attendance updates.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Team Allocation System}
+\begin{itemize}
+    \item \textbf{Purpose:} Allocates players into balanced teams based on class, skill, and shirt color.
+    \item \textbf{Technologies:}
+    \begin{itemize}
+        \item JavaScript (Node.js) for algorithm implementation, using array methods for sorting and filtering.
+        \item Integrated with React front end and Express back end.
+    \end{itemize}
+    \item \textbf{Rationale:} JavaScript ensures seamless integration with the web stack, avoiding overhead of languages like Python or C++.
+\end{itemize}
+
+\subsection{Trophy System}
+\begin{itemize}
+    \item \textbf{Purpose:} Handles trophy submissions, custom trophy creation, and approvals.
+    \item \textbf{Technologies:}
+    \begin{itemize}
+        \item React + Tailwind CSS for forms and approval tables.
+        \item Node.js (Express) for processing submissions.
+        \item REST API for front-end/back-end communication.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Data Storage}
+\begin{itemize}
+    \item \textbf{Purpose:} Stores player profiles, sessions, trophies, and results.
+    \item \textbf{Technologies:}
+    \begin{itemize}
+        \item PostgreSQL for relational data storage.
+        \item Prisma or Sequelize for ORM to simplify database interactions.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Back End}
+\begin{itemize}
+    \item \textbf{Purpose:} Manages authentication, API endpoints, and real-time updates.
+    \item \textbf{Technologies:}
+    \begin{itemize}
+        \item Node.js + Express for lightweight API development.
+        \item JWT for secure authentication.
+        \item Socket.IO for real-time updates.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Deployment}
+\begin{itemize}
+    \item \textbf{Technologies:}
+    \begin{itemize}
+        \item Vercel or Netlify for front-end hosting.
+        \item Heroku or Render for back-end and database hosting.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Additional Tools}
+\begin{itemize}
+    \item Babel for JavaScript compatibility.
+    \item ESLint for code quality.
+    \item Vite for fast development and bundling.
+\end{itemize}
+
+\section{Rationale}
+\begin{itemize}
+    \item \textbf{JavaScript Stack:} Unifies front and back end, simplifying development.
+    \item \textbf{React + Tailwind:} Ensures scalable, responsive UI.
+    \item \textbf{PostgreSQL:} Matches structured data needs.
+    \item \textbf{WebSockets:} Enables real-time updates for admin dashboard.
+    \item \textbf{Deployment:} Vercel and Heroku simplify browser-based access.
+\end{itemize}
+
+\section{Next Steps}
+\begin{enumerate}
+    \item Prototype team allocation algorithm in JavaScript, addressing edge cases.
+    \item Design wireframes for dashboards.
+    \item Define PostgreSQL schema for players, sessions, and trophies.
+    \item Prioritize MVP features (allocation, dashboards) before adding MVP ranking.
+\end{enumerate}
+
+\end{document}
