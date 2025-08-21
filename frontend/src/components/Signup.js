@@ -1,24 +1,33 @@
-// src/components/Signup.js
 import React, { useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import backgroundImage from '../background_image.jpg';
 import axios from 'axios';
 
 const Signup = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', student_number: '', gender: '', skill: '', class: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', gender: 'Male', student_number: '' });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.name || !formData.email || !formData.password || !formData.student_number) {
+      alert('All fields are required');
+      return;
+    }
     try {
-      await axios.post('http://localhost:5000/api/auth/signup', formData, {
-        headers: { 'Content-Type': 'application/json' }
+      const response = await axios.post('http://localhost:5000/api/auth/signup', formData, {
+        headers: { 'Content-Type': 'application/json' },
       });
-      alert('Signup successful! Please log in.');
+      localStorage.setItem('token', response.data.token); // Store token
+      alert('Signup successful! Redirecting to login.');
       window.location.href = '/login';
     } catch (err) {
       console.error('Signup error:', err);
       alert('Signup failed: ' + (err.response?.data || 'Server Error'));
     }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   return (
@@ -46,59 +55,48 @@ const Signup = () => {
             <Form.Label>Name</Form.Label>
             <Form.Control
               type="text"
+              name="name"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={handleChange}
+              required
             />
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Email</Form.Label>
             <Form.Control
               type="email"
+              name="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={handleChange}
+              required
             />
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Password</Form.Label>
             <Form.Control
               type="password"
+              name="password"
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={handleChange}
+              required
             />
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Student Number</Form.Label>
             <Form.Control
               type="text"
+              name="student_number"
               value={formData.student_number}
-              onChange={(e) => setFormData({ ...formData, student_number: e.target.value })}
+              onChange={handleChange}
+              required
             />
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Gender</Form.Label>
-            <Form.Control
-              type="text"
-              value={formData.gender}
-              onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Skill (1-10)</Form.Label>
-            <Form.Control
-              type="number"
-              min="1"
-              max="10"
-              value={formData.skill}
-              onChange={(e) => setFormData({ ...formData, skill: e.target.value })}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Class</Form.Label>
-            <Form.Control
-              type="text"
-              value={formData.class}
-              onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-            />
+            <Form.Select name="gender" value={formData.gender} onChange={handleChange} required>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </Form.Select>
           </Form.Group>
           <Button variant="primary" type="submit">
             Sign Up

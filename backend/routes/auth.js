@@ -6,16 +6,19 @@ const pool = require('../db');
 
 // Player Signup
 router.post('/signup', async (req, res) => {
-  const { name, email, password, student_number, gender, skill, class: playerClass, is_admin } = req.body;
+  const { name, email, password, student_number, gender } = req.body;
   try {
+    if (!name || !email || !password || !student_number || !gender) {
+      return res.status(400).send('All fields are required');
+    }
     const emailCheck = await pool.query('SELECT * FROM players WHERE email = $1', [email]);
     if (emailCheck.rows.length > 0) return res.status(400).send('Email already exists');
     const studentCheck = await pool.query('SELECT * FROM players WHERE student_number = $1', [student_number]);
     if (studentCheck.rows.length > 0) return res.status(400).send('Student number already exists');
     const hashedPassword = await bcrypt.hash(password, 10);
     const result = await pool.query(
-      'INSERT INTO players (name, email, password, student_number, gender, skill, class, payment, is_admin) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, name, email, student_number, gender, skill, class, payment, is_admin',
-      [name, email, hashedPassword, student_number, gender || 'other', skill || 3, playerClass || 'Novice', 'Weekly', is_admin || false]
+      'INSERT INTO players (name, email, password, student_number, gender, skill, class, payment, is_admin, player_status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, name, email, student_number, gender, skill, class, payment, is_admin',
+      [name, email, hashedPassword, student_number, gender, 3, 'Novice', 'Weekly', false, 'New']
     );
     const token = jwt.sign({ player_id: result.rows[0].id }, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: '1h' });
     res.json({ token, player: result.rows[0] });
@@ -25,7 +28,7 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// Player Login
+// Player Login (unchanged)
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {

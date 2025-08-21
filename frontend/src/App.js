@@ -12,27 +12,29 @@ import DashboardAdmin from './components/DashboardAdmin';
 import Admins from './components/Admins';
 import PlayerList from './components/PlayerList';
 import Sessions from './components/Sessions';
-import Results from './components/Results';
-import ResultsConfirmed from './components/ResultsConfirmed';
-import ResultsPending from './components/ResultsPending';
 import SessionsCheckin from './components/SessionsCheckin';
 import SessionsDraft from './components/SessionsDraft';
 import SessionsFinal from './components/SessionsFinal';
+import Results from './components/Results';
+import ResultsConfirmed from './components/ResultsConfirmed';
+import ResultsPending from './components/ResultsPending';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('isAuthenticated') === 'true');
   const [isPlayerView, setIsPlayerView] = useState(localStorage.getItem('isPlayerView') === 'true');
-  const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') === 'true'); // New state
+  const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') === 'true');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [selectedSessionId, setSelectedSessionId] = useState(localStorage.getItem('selectedSessionId') || null); // New state
+
   console.log('App rendering');
-  console.log('isAuthenticated:', isAuthenticated, 'isPlayerView:', isPlayerView, 'isAdmin:', isAdmin);
+  console.log('isAuthenticated:', isAuthenticated, 'isPlayerView:', isPlayerView, 'isAdmin:', isAdmin, 'selectedSessionId:', selectedSessionId);
 
   useEffect(() => {
     const updateAuth = () => {
       setIsAuthenticated(localStorage.getItem('isAuthenticated') === 'true');
       setIsPlayerView(localStorage.getItem('isPlayerView') === 'true');
-      setIsAdmin(localStorage.getItem('isAdmin') === 'true'); // Update isAdmin
-      console.log('Updated - isAuthenticated:', localStorage.getItem('isAuthenticated'), 'isPlayerView:', localStorage.getItem('isPlayerView'), 'isAdmin:', localStorage.getItem('isAdmin'));
+      setIsAdmin(localStorage.getItem('isAdmin') === 'true');
+      setSelectedSessionId(localStorage.getItem('selectedSessionId') || null); // Sync selected session
     };
     window.addEventListener('storage', updateAuth);
     return () => window.removeEventListener('storage', updateAuth);
@@ -45,12 +47,18 @@ function App() {
   const handleSignOut = () => {
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('isPlayerView');
-    localStorage.removeItem('isAdmin'); // Clear isAdmin
+    localStorage.removeItem('isAdmin');
     localStorage.removeItem('token');
+    localStorage.removeItem('selectedSessionId'); // Clear selected session
     setIsAuthenticated(false);
     setIsPlayerView(true);
-    setIsAdmin(false); // Reset for safety
+    setIsAdmin(false);
     window.location.href = '/';
+  };
+
+  const handleSelectSession = (sessionId) => {
+    setSelectedSessionId(sessionId);
+    localStorage.setItem('selectedSessionId', sessionId);
   };
 
   const handleSwitchView = () => {
@@ -90,7 +98,7 @@ function App() {
                     Sign Out
                   </Button>
                 </Nav.Item>
-                {isAuthenticated && isAdmin && ( // Show switch button for admins only
+                {isAuthenticated && isAdmin && (
                   <Nav.Item>
                     <Button variant="outline-secondary" onClick={handleSwitchView} className="ms-2" style={{ whiteSpace: 'nowrap' }}>
                       Switch to {isPlayerView ? 'Admin' : 'Player'} View
@@ -103,7 +111,7 @@ function App() {
         </Container>
       </BootstrapNavbar>
       <div style={{ display: 'flex', minHeight: 'calc(100vh - 56px)', marginTop: '56px', overflowX: 'hidden' }}>
-        {isAuthenticated && (
+        {isAuthenticated && !isPlayerView && (
           <nav
             className="bg-dark text-white"
             style={{
@@ -113,10 +121,9 @@ function App() {
               transition: 'width 0.3s, padding 0.3s',
               overflow: 'hidden',
               position: 'relative',
-              display: isPlayerView ? 'none' : 'block',
             }}
           >
-            {!sidebarCollapsed && !isPlayerView && (
+            {!sidebarCollapsed && (
               <>
                 <button
                   onClick={toggleSidebar}
@@ -152,22 +159,22 @@ function App() {
                     <ul className="list-unstyled ms-3">
                       <li className="mb-1">
                         <Link to="/admin/sessions" className="text-white text-decoration-none">
-                          Manage Sessions
+                          Sessions & Selections
                         </Link>
                       </li>
                       <li className="mb-1">
                         <Link to="/admin/sessions/checkin" className="text-white text-decoration-none">
-                          Check-in Sessions
+                          Check-Ins
                         </Link>
                       </li>
                       <li className="mb-1">
                         <Link to="/admin/sessions/draft" className="text-white text-decoration-none">
-                          Draft Sessions
+                          Drafting
                         </Link>
                       </li>
                       <li className="mb-1">
                         <Link to="/admin/sessions/final" className="text-white text-decoration-none">
-                          Final Sessions
+                          Final Allocations
                         </Link>
                       </li>
                     </ul>
@@ -175,11 +182,6 @@ function App() {
                   <li className="mb-2">
                     <strong>Results</strong>
                     <ul className="list-unstyled ms-3">
-                      <li className="mb-1">
-                        <Link to="/admin/results" className="text-white text-decoration-none">
-                          Manage Results
-                        </Link>
-                      </li>
                       <li className="mb-1">
                         <Link to="/admin/results/confirmed" className="text-white text-decoration-none">
                           Confirmed Results
@@ -201,7 +203,7 @@ function App() {
           style={{
             flex: 1,
             padding: '0',
-            marginLeft: isAuthenticated && !sidebarCollapsed ? '250px' : '0',
+            marginLeft: isAuthenticated && !sidebarCollapsed && !isPlayerView ? '250px' : '0',
           }}
         >
           <div style={{ padding: '20px' }}>
@@ -216,10 +218,10 @@ function App() {
                 <Route path="/admin/dashboard" element={<DashboardAdmin />} />
                 <Route path="/admin/admins" element={<Admins />} />
                 <Route path="/admin/players" element={<PlayerList />} />
-                <Route path="/admin/sessions" element={<Sessions />} />
-                <Route path="/admin/sessions/checkin" element={<SessionsCheckin />} />
-                <Route path="/admin/sessions/draft" element={<SessionsDraft />} />
-                <Route path="/admin/sessions/final" element={<SessionsFinal />} />
+                <Route path="/admin/sessions" element={<Sessions selectedSessionId={selectedSessionId} handleSelectSession={handleSelectSession} />} />
+                <Route path="/admin/sessions/checkin" element={<SessionsCheckin selectedSessionId={selectedSessionId} />} />
+                <Route path="/admin/sessions/draft" element={<SessionsDraft selectedSessionId={selectedSessionId} />} />
+                <Route path="/admin/sessions/final" element={<SessionsFinal selectedSessionId={selectedSessionId} />} />
                 <Route path="/admin/results" element={<Results />} />
                 <Route path="/admin/results/confirmed" element={<ResultsConfirmed />} />
                 <Route path="/admin/results/pending" element={<ResultsPending />} />
@@ -231,5 +233,4 @@ function App() {
     </Router>
   );
 }
-
-export default App;
+  export default App;
